@@ -15,10 +15,9 @@ void draw() {
     fill(255,0,0);
     stroke(0,0,0);
 
-
+    b.update_members();
     for (int i = 0; i < b.n; i++) {
         circle(b.members[i].pos.x, b.members[i].pos.y, 10);
     }
-    b.update_members();
-    delay(100);
+    //delay(100);
 }

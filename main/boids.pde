@@ -16,7 +16,9 @@ public class Boid {
         for (int i = 0; i < this.n; i++) {
             Member current_member = this.members[i];
             this.find_com(current_member);
+            Vec2 d = this.avoid_others(current_member);
             current_member.move_to_com(this.com);
+            current_member.move_away(d);
         }
     }
 
@@ -28,7 +30,22 @@ public class Boid {
         for (int i = 0; i < this.n; i++) {
             if (this.members[i] != m) total.add(this.members[i].pos); // don't include the position of member m
         }
+        total.times(0.5);
         this.com = total.times(1 /float(this.n - 1));
         return this.com;
+    }
+
+    public Vec2 avoid_others(Member m) {
+        Vec2 delta = new Vec2(0,0);
+
+        for (int i = 0; i < this.n; i++) {
+            if (this.members[i] != m) {
+                if (m.pos.distanceTo(this.members[i].pos) < 20) {
+                    delta = delta.minus(this.members[i].pos.minus(m.pos)).times(0.5);
+                }
+            }
+        }
+
+        return delta;
     }
 }
