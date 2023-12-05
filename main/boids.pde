@@ -46,6 +46,6 @@ public class Boid {
             }
         }
 
-        return delta;
+        return delta.times(0.5);
     }
 }
