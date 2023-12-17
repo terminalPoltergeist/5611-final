@@ -31,8 +31,8 @@ public class Vec2 {
   }
   
   public void add(Vec2 rhs){
-    x += rhs.x;
-    y += rhs.y;
+    this.x += rhs.x;
+    this.y += rhs.y;
   }
   
   public Vec2 minus(Vec2 rhs){
@@ -40,8 +40,8 @@ public class Vec2 {
   }
   
   public void subtract(Vec2 rhs){
-    x -= rhs.x;
-    y -= rhs.y;
+    this.x -= rhs.x;
+    this.y -= rhs.y;
   }
   
   public Vec2 times(float rhs){
@@ -49,8 +49,8 @@ public class Vec2 {
   }
   
   public void mul(float rhs){
-    x *= rhs;
-    y *= rhs;
+    this.x *= rhs;
+    this.y *= rhs;
   }
   
   public void clampToLength(float maxL){

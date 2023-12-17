@@ -19,6 +19,28 @@ public class Boid {
             Vec2 d = this.avoid_others(current_member);
             current_member.move_to_com(this.com);
             current_member.move_away(d);
+            Vec2 dv = this.go_with_the_flow(current_member);
+            dv.add(new Vec2(random(-0.5,0.5), random(-0.5,0.5)));
+            current_member.follow(dv);
+            current_member.pos.add(current_member.vel);
+            Vec2 mouse = new Vec2(mouseX, mouseY);
+            Vec2 delta = current_member.pos.minus(mouse);
+            float dist = delta.length();
+            if (dist < 100) {
+                current_member.pos.add(delta.normalized().times(dist/50));
+            }
+            if (current_member.pos.x > width * 1.5) {
+                current_member.pos.x = 0;
+            }
+            if (current_member.pos.y > height * 1.5) {
+                current_member.pos.y = 0;
+            }
+            if (current_member.pos.x < width - (width * 1.5)) {
+                current_member.pos.x = width;
+            }
+            if (current_member.pos.y <  height - (height * 1.5)) {
+                current_member.pos.y = height;
+            }
         }
     }
 
@@ -41,11 +63,26 @@ public class Boid {
         for (int i = 0; i < this.n; i++) {
             if (this.members[i] != m) {
                 if (m.pos.distanceTo(this.members[i].pos) < 20) {
-                    delta = delta.minus(this.members[i].pos.minus(m.pos)).times(0.5);
+                    // if the given member is within a radius of 20, count it towards the delta
+                    delta = delta.minus(this.members[i].pos.minus(m.pos)).times(0.2);
                 }
             }
         }
 
         return delta.times(0.5);
+    }
+
+    public Vec2 go_with_the_flow(Member m) {
+        // for a given member, update it's velocity to go with the rest of the members
+        Vec2 pv = new Vec2(0.0,0.0); // the percieved velocity of the member
+
+        for (int i = 0; i < this.n; i++) {
+            if (this.members[i] != m) {
+                pv = pv.plus(this.members[i].vel);
+            }
+        }
+        pv = pv.times(1/float(this.n-1));
+
+        return pv.minus(m.vel);
     }
 }
