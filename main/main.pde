@@ -48,8 +48,10 @@ void startGame(){
 void mouseClicked() {
     switch (currentLevel){
         case 0: // Start Screen
-            if (mouseX > width /2 - 75 && mouseX < width / 2 + 75 && mouseY > height / 2 + 155 && mouseY < height / 2 + 205){
+            if (mouseX > width /2 - 75 && mouseX < width / 2 + 75 && mouseY > height / 2 + 135 && mouseY < height / 2 + 185){
                 startGame();
+            } else if (mouseX > width /2 - 75 && mouseX < width / 2 + 75 && mouseY > height / 2 + 190 && mouseY < height / 2 + 240){
+                currentLevel = 4;
             }
             break;
         case 1: // Game Screen
@@ -92,6 +94,9 @@ void mouseClicked() {
                 currentLevel = 0;
             }
             break;
+        case 4: // Score Screen Display
+            currentLevel = 0;
+            break;
 
     }
         
@@ -111,7 +116,8 @@ void draw() {
             text("- Hunt down the boids!", width / 2, height / 2 + 50);
             text("- Click with your shotgun mouse to get em!", width / 2, height / 2 + 80);
 
-            drawButton("Start", width / 2, height / 2 + 180, 150, 50);
+            drawButton("Start", width / 2, height / 2 + 160, 150, 50);
+            drawButton("Scores", width / 2, height / 2 + 215, 150, 50);
             break;
         case 1: // Game Screen
             background(255,255,255);
@@ -156,8 +162,9 @@ void draw() {
             drawButton("Enter Score", width / 2, height / 2 + 120, 120, 40);
             break;
         case 3: // Score Screen
-            background(220);
+            background(30,30,60);
             textSize(18);
+            fill(0);
             text("Score Data", width / 2, 30);
             for (int i = 0; i < scoreData.length; i++) {
                 text(scoreData[i], width / 2, 60 + i * 20);
@@ -165,11 +172,36 @@ void draw() {
 
             // Display user input prompt
             fill(0);
-            textSize(16);
+            textSize(32);
             text("Enter your 3-letter identifier:", width / 2, height / 2 - 30);
             text(userInput, width / 2, height / 2);
             // Draw a button to submit the user input
             drawButton("Submit", width / 2, height / 2 + 40, 80, 30);
+            break;
+        case 4: // Score Screen Display
+            int fromColor = color(30, 30, 60); // Dark blue
+            int toColor = color(70, 70, 120);   // Light blue
+
+            
+            for (int i = 0; i < height; i++) {
+                float inter = map(i, 0, height, 0, 1);
+                int c = lerpColor(fromColor, toColor, inter);
+                stroke(c);
+                line(0, i, width, i);
+            }
+            fill(255);
+            textSize(64);
+            textAlign(CENTER, TOP);
+            text("High Scores", width / 2, 20);
+
+            // Display score data
+            fill(255);
+            textSize(32);
+            for (int i = 0; i < scoreData.length; i++) {
+                text(scoreData[i], width / 2, 100 + i * 30);
+            }
+            break;
+
     }
     //delay(100);
 }
@@ -214,6 +246,7 @@ void saveScore(){
     String newScore = userInput + " - " + str(score);
     String[] newData = append(scoreData, newScore);
     saveStrings(fileName, newData);
+    scoreData = loadStrings(fileName);
 }
 
 void drawButton(String label, float x, float y, float w, float h) {
@@ -241,6 +274,7 @@ void keyPressed(){
         case 3: // Score Screen
             if (keyCode >= 'A' && keyCode <= 'Z' && userInput.length() < 3) {
                 userInput += key;
+                userInput = userInput.toUpperCase();
             } else if (keyCode == BACKSPACE && userInput.length() > 0) {
                 userInput = userInput.substring(0, userInput.length() - 1);
             }
