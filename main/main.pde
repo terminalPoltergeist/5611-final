@@ -48,7 +48,6 @@ void startGame(){
     for (int i = 0; i < 6; i++){
         clouds[i] = new Vec2(random(width),random(height));
     }
-    println("Starting vel", members[0].vel);
 }
 
 void mouseClicked() {
@@ -197,6 +196,7 @@ void draw() {
             // Display score data
             fill(255);
             textSize(32);
+            bubbleSort(scoreData); // Display the data in order of highest to lowest
             for (int i = 0; i < scoreData.length; i++) {
                 text(scoreData[i], width / 2, 100 + i * 30);
             }
@@ -263,6 +263,7 @@ void drawScore(){
 void saveScore(){
     String newScore = userInput + " - " + str(score);
     String[] newData = append(scoreData, newScore);
+    bubbleSort(newData);
     saveStrings(fileName, newData);
     scoreData = loadStrings(fileName);
 }
@@ -317,4 +318,23 @@ void keyPressed(){
             }
             break;
     }
+}
+
+void bubbleSort(String[] arr) {
+  int n = arr.length;
+  
+  for (int i = 0; i < n-1; i++) {
+    for (int j = 0; j < n-i-1; j++) {
+      // Extract numeric part from the strings
+      int num1 = Integer.parseInt(arr[j].split("-")[1].trim());
+      int num2 = Integer.parseInt(arr[j+1].split("-")[1].trim());
+      
+      // Swap if the numeric part of the current element is greater than the next element
+      if (num1 < num2) {
+        String temp = arr[j];
+        arr[j] = arr[j+1];
+        arr[j+1] = temp;
+      }
+    }
+  }
 }
