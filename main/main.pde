@@ -143,8 +143,8 @@ void draw() {
             // Score display
             drawScore();
 
-            if (millis() - startTime > 10000) {
-                currentLevel = 2; //Is set for 10 seconds right now for testing, should be at like 30 seconds or something maybe
+            if (millis() - startTime > 30000) {
+                currentLevel = 2; //Is set to change at 30 seconds at the moment
                 startTime = millis(); // Set a new start time so that there is a buffer on going back to the start screen
             }
             break;
