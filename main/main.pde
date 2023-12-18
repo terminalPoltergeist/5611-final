@@ -126,17 +126,8 @@ void draw() {
 
             b.update_members();
             // Move all the living boids
-            for (int i = 0; i < b.n; i++) { 
-                Vec2 pos = b.members[i].pos;
-                Vec2 vel = b.members[i].vel;
-                pushMatrix();
-                translate(pos.x, pos.y);
-                rotate(atan2(vel.x, vel.y) + PI); // The PI modifier was added to help but it still doesn't seem to get it 100%
-                boid.setFill(color(255,0,0));
-                shape(boid);
-                popMatrix();
-                
-            }
+            drawBoids();
+            
             // Move all the falling boids
             drawFallingBoids();
 
@@ -204,6 +195,20 @@ void draw() {
 
     }
     //delay(100);
+}
+
+void drawBoids(){
+    for (int i = 0; i < b.n; i++) { 
+        Vec2 pos = b.members[i].pos;
+        Vec2 vel = b.members[i].vel;
+        pushMatrix();
+        translate(pos.x, pos.y);
+        rotate(atan2(vel.x, vel.y) - PI/2); // The PI modifier was added to help but it still doesn't seem to get it 100%
+        boid.setFill(color(255,0,0));
+        shape(boid);
+        popMatrix();
+        
+    }
 }
 
 void drawFallingBoids(){
