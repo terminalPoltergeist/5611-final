@@ -1,0 +1,5 @@
+Stretch Goals
++Make the moving better i.e. have them turn around from the circle
++Sounds, i.e. gun shot and bird dying sounds, music while playing or something
++Starting animation to play when the start button is pressed
++Put scores in order of high to low
