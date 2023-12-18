@@ -20,21 +20,24 @@ public class Boid {
             Member current_member = this.members[i];
             this.find_com(current_member);
             Vec2 d = this.avoid_others(current_member);
-            current_member.move_to_com(this.com);
+            if (this.com.length() > 0) current_member.move_to_com(this.com); // Changed so that they don't gravitate towards 0,0 when there is no one else near them
             current_member.move_away(d);
             Vec2 dv = this.go_with_the_flow(current_member);  // percieved directional velocity of the mass of boids
-            dv.add(chaos);
+            // dv.add(chaos);
             current_member.follow(dv); // update members velocity with dv
-            current_member.pos.add(current_member.vel);
+
             // check if members are in radius of the mouse
             Vec2 mouse = new Vec2(mouseX, mouseY);
             Vec2 delta = current_member.pos.minus(mouse);
             float dist = delta.length(); // distance between the mouse and the given boid member
+            
+            
             if (dist < 100) {
-                current_member.vel.add(delta.normalized().times(dist/75));
+                current_member.vel.add(delta.times(dist/75));
             }
             if (current_member.vel.length() > maxSpeed) current_member.vel.clampToLength(maxSpeed); //Sets a max speed
             // check if members are outside of the screen
+            current_member.pos.add(current_member.vel);
             if (current_member.pos.x > width + 5) {
                 current_member.pos.x = 0;
             }
@@ -95,8 +98,11 @@ public class Boid {
                 count++;
             }
         }
-        if (count > 0) pv = pv.times(1/float(count));
-    
-        return pv.minus(m.vel);
+        if (count > 0){
+            pv = pv.times(1/float(count));
+            return pv.minus(m.vel);
+        } 
+        
+        return new Vec2(0,0);
     }
 }

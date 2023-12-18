@@ -1,4 +1,5 @@
-int numBoids = 100;
+int numBoidsGlobal = 100;
+int numBoids = numBoidsGlobal;
 Member[] members = new Member[numBoids];
 Boid b;
 PShape boid;
@@ -37,7 +38,7 @@ void startGame(){
     falling_members = new ArrayList<Member>();
     scoreData = loadStrings(fileName);
     userInput = "";
-    numBoids = 100;
+    numBoids = numBoidsGlobal;
     Member[] members = new Member[numBoids];
     for (int i = 0; i < numBoids; i++) {
         members[i] = new Member(new Vec2(random(width), random(height)), new Vec2(random(1,2), random(-0.5,0.5)));
@@ -47,6 +48,7 @@ void startGame(){
     for (int i = 0; i < 6; i++){
         clouds[i] = new Vec2(random(width),random(height));
     }
+    println("Starting vel", members[0].vel);
 }
 
 void mouseClicked() {
@@ -141,7 +143,7 @@ void draw() {
             // Score display
             drawScore();
 
-            if (millis() - startTime > 300000) {
+            if (millis() - startTime > 30000) {
                 currentLevel = 2; //Is set for 30 seconds right now 
                 startTime = millis(); // Set a new start time so that there is a buffer on going back to the start screen
             }

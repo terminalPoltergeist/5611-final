@@ -18,14 +18,14 @@ public class Member {
 
     public void move_away(Vec2 delta) {
         // move a member away from all others
-        this.pos.add(delta);
+        this.vel.add(delta);
     }
 
     public void follow(Vec2 dv) {
         this.vel.add(dv);
-        if (this.vel.length() < 1.5) {
-            // if they start moving too slow, speed them up?
-            this.vel.mul(1.5);
-        }
+        // if (this.vel.length() < 1.5) {
+        //     // if they start moving too slow, speed them up?
+        //     this.vel.mul(1.5);
+        // }
     }
 }
