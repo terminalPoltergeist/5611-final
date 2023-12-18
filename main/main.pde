@@ -131,7 +131,8 @@ void draw() {
                 Vec2 vel = b.members[i].vel;
                 pushMatrix();
                 translate(pos.x, pos.y);
-                rotate(atan2(vel.x, vel.y) + PI); // The PI modifier was added to help but it still doesn't seem to get it 100%
+                //rotate(atan2(vel.x, vel.y) + PI); // The PI modifier was added to help but it still doesn't seem to get it 100%
+                rotate(atan2(-1 * vel.x, vel.y));
                 boid.setFill(color(255,0,0));
                 shape(boid);
                 popMatrix();

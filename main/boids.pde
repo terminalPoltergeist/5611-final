@@ -13,21 +13,23 @@ public class Boid {
 
     public void update_members() {
         // for each member, calculate the percieved com in relation to that member, then update it's position
+        Vec2 chaos = new Vec2(random(-0.05, 0.05), random(-0.05, 0.05)); // a modifyer to add to all boid members percieved velocities, makes the entire mass shift direction slightly
         for (int i = 0; i < this.n; i++) {
             Member current_member = this.members[i];
             this.find_com(current_member);
             Vec2 d = this.avoid_others(current_member);
             current_member.move_to_com(this.com);
             current_member.move_away(d);
-            Vec2 dv = this.go_with_the_flow(current_member);
-            dv.add(new Vec2(random(-0.5,0.5), random(-0.5,0.5)));
-            current_member.follow(dv);
+            Vec2 dv = this.go_with_the_flow(current_member);  // percieved directional velocity of the mass of boids
+            dv.add(chaos);
+            current_member.follow(dv); // update members velocity with dv
             current_member.pos.add(current_member.vel);
+            // check if members are in radius of the mouse
             Vec2 mouse = new Vec2(mouseX, mouseY);
             Vec2 delta = current_member.pos.minus(mouse);
-            float dist = delta.length();
+            float dist = delta.length(); // distance between the mouse and the given boid member
             if (dist < 100) {
-                current_member.pos.add(delta.normalized().times(dist/50));
+                current_member.pos.add(delta.normalized().times(dist/75));
             }
             if (current_member.pos.x > width * 1.5) {
                 current_member.pos.x = 0;
