@@ -11,6 +11,7 @@ int startTime;
 String[] scoreData;
 String fileName = "scoreData.txt";
 String userInput = "";
+Vec2[] clouds = new Vec2[6];
 
 void setup() {
     size(1000,1000,P2D);
@@ -19,7 +20,7 @@ void setup() {
     boid = createShape();
     boid.beginShape();
     boid.stroke(0,0,0);
-    boid.strokeWeight(1);
+    boid.strokeWeight(0);
     boid.vertex(0, 5);
     boid.vertex(-3, -5);
     boid.vertex(0, -3);
@@ -39,10 +40,13 @@ void startGame(){
     numBoids = 100;
     Member[] members = new Member[numBoids];
     for (int i = 0; i < numBoids; i++) {
-        members[i] = new Member(new Vec2(random(0, 500), random(0,500)), new Vec2(random(1,2), random(-0.5,0.5)));
+        members[i] = new Member(new Vec2(random(width), random(height)), new Vec2(random(1,2), random(-0.5,0.5)));
     }
     b = new Boid(members);
     score = 0;
+    for (int i = 0; i < 6; i++){
+        clouds[i] = new Vec2(random(width),random(height));
+    }
 }
 
 void mouseClicked() {
@@ -120,32 +124,25 @@ void draw() {
             drawButton("Scores", width / 2, height / 2 + 215, 150, 50);
             break;
         case 1: // Game Screen
-            background(255,255,255);
+            background(135, 206, 235);
             fill(255,0,0);
             stroke(0,0,0);
 
+            for (int i = 0; i < 6; i++){
+                drawCloud(clouds[i].x,clouds[i].y);
+            }
+
             b.update_members();
             // Move all the living boids
-            for (int i = 0; i < b.n; i++) { 
-                Vec2 pos = b.members[i].pos;
-                Vec2 vel = b.members[i].vel;
-                pushMatrix();
-                translate(pos.x, pos.y);
-                //rotate(atan2(vel.x, vel.y) + PI); // The PI modifier was added to help but it still doesn't seem to get it 100%
-                rotate(atan2(-1 * vel.x, vel.y));
-                boid.setFill(color(255,0,0));
-                shape(boid);
-                popMatrix();
-                
-            }
+            drawFlyingBoids();
             // Move all the falling boids
             drawFallingBoids();
 
             // Score display
             drawScore();
 
-            if (millis() - startTime > 10000) {
-                currentLevel = 2; //Is set for 10 seconds right now for testing, should be at like 30 seconds or something maybe
+            if (millis() - startTime > 30000) {
+                currentLevel = 2; //Is set for 30 seconds right now 
                 startTime = millis(); // Set a new start time so that there is a buffer on going back to the start screen
             }
             break;
@@ -207,19 +204,33 @@ void draw() {
     //delay(100);
 }
 
+void drawFlyingBoids(){
+    for (int i = 0; i < b.n; i++) { 
+        Vec2 pos = b.members[i].pos;
+        Vec2 vel = b.members[i].vel;
+        pushMatrix();
+        translate(pos.x, pos.y);
+        rotate(atan2(-1 * vel.x, vel.y));
+        boid.setFill(color(255,216,1));
+        shape(boid);
+        popMatrix();
+        
+    }
+}
+
 void drawFallingBoids(){
     for (int i = 0; i < falling_members.size(); i++){
         Vec2 pos = falling_members.get(i).pos;
         pushMatrix();
         translate(pos.x, pos.y);
-        boid.setFill(color(200,200,200));
+        boid.setFill(color(120,120,120));
         shape(boid);
         popMatrix();
         if (swap < 10){
-            falling_members.get(i).pos = pos.minus(new Vec2(1,-2)); // The difference in y is intentional as it makes the motion more "realistic" to me
+            falling_members.get(i).pos = pos.minus(new Vec2(1,-4)); // The difference in y is intentional as it makes the motion more "realistic" to me
             
         } else if (swap < 20){
-            falling_members.get(i).pos = pos.minus(new Vec2(-1,-1)); 
+            falling_members.get(i).pos = pos.minus(new Vec2(-1,-2)); 
         }
         
     }
@@ -234,12 +245,16 @@ void drawFallingBoids(){
 void drawScore(){
     textSize(32);
     textAlign(LEFT);
-    text("SCORE:", 0, 32);
+    text("SCORE:", 12, 32);
     text(str(score), 40, 64);
-    text(str(millis()-startTime), 100, height-50);
+    text("TIME", width - 100, 32);
+    text(str(30-(millis()-startTime)/1000), width - 70, 64);
+
     noFill();
-    stroke(200,200,200);
+    stroke(255,0,0);
     circle(mouseX, mouseY, 100);
+    line(mouseX-50,mouseY,mouseX+50,mouseY);
+    line(mouseX,mouseY-50,mouseX,mouseY+50);
     stroke(0,0,0);
 }
 
@@ -268,6 +283,25 @@ void drawButton(String label, float x, float y, float w, float h) {
   textSize(20);
   textAlign(CENTER, CENTER);
   text(label, x, y);
+}
+
+void drawCloud(float x, float y) {
+  noStroke();
+  fill(255,255,242); // Cloud color
+  
+  // Draw cloud body
+  float cloudWidth = 90;
+  float cloudHeight = 55;
+  ellipse(x, y, cloudWidth + x % 17, cloudHeight + y % 13);
+  ellipse(x - cloudWidth * 0.4, y, cloudWidth * 1.2 - x % 23, cloudHeight * 0.8 + y % 23);
+  ellipse(x + cloudWidth * 0.4, y, cloudWidth * 0.8 + x % 23, cloudHeight + y % 23);
+  
+  // Draw smaller circles to add detail to the cloud
+//   for (int i = 0; i < 5; i++) {
+//     float offsetX = random(-cloudWidth * 0.4, cloudWidth * 0.4);
+//     float offsetY = random(-cloudHeight * 0.4, cloudHeight * 0.4);
+//     ellipse(x + offsetX, y + offsetY, random(20, 50), random(10, 30));
+//   }
 }
 
 void keyPressed(){

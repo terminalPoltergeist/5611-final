@@ -31,16 +31,16 @@ public class Boid {
             if (dist < 100) {
                 current_member.pos.add(delta.normalized().times(dist/75));
             }
-            if (current_member.pos.x > width * 1.5) {
+            if (current_member.pos.x > width + 5) {
                 current_member.pos.x = 0;
             }
-            if (current_member.pos.y > height * 1.5) {
+            if (current_member.pos.y > height + 5) {
                 current_member.pos.y = 0;
             }
-            if (current_member.pos.x < width - (width * 1.5)) {
+            if (current_member.pos.x < -5) {
                 current_member.pos.x = width;
             }
-            if (current_member.pos.y <  height - (height * 1.5)) {
+            if (current_member.pos.y <  -5) {
                 current_member.pos.y = height;
             }
         }
