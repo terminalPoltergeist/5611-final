@@ -1,3 +1,7 @@
+import processing.sound.*;
+Sound s;
+SoundFile reload, blast, quack;
+
 int numBoidsGlobal = 100;
 int numBoids = numBoidsGlobal;
 Member[] members = new Member[numBoids];
@@ -15,6 +19,8 @@ String userInput = "";
 Vec2[] clouds = new Vec2[6];
 int shells = 2;
 boolean fired = false;
+boolean hit = false;
+int flashSize = 0;
 
 void setup() {
     size(1000,1000,P2D);
@@ -32,6 +38,14 @@ void setup() {
 
     // Load the score
     scoreData = loadStrings(fileName);
+
+    // Load the sounds
+    s = new Sound(this);
+    s.volume(0.1);
+    reload = new SoundFile(this, "Audio/reload.mp3");
+    blast = new SoundFile(this, "Audio/blast.mp3");
+    quack = new SoundFile(this, "Audio/quack.mp3");
+
 }
 
 void startGame(){
@@ -73,6 +87,7 @@ void mouseClicked() {
                     falling_members.add(b.members[i]);
                     knocked_out.append(i);
                     score += 10;
+                    hit = true;
                 } 
             }
             // Resize the members
@@ -147,10 +162,17 @@ void draw() {
             if (fired && shells < 1) {
                 shells = 2;
                 fired = false;
+                reload.play();
             }
             if (fired) {
                 shells--;
                 fired = false;
+                blast.play();
+            }
+            if (hit){
+                quack.play();
+                hit = false;
+                startFlash();
             }
             drawShells();
 
@@ -256,6 +278,10 @@ void drawFallingBoids(){
     }
 }
 
+void startFlash(){
+    flashSize = 135;
+}
+
 void drawScore(){
     textSize(32);
     textAlign(LEFT);
@@ -264,6 +290,13 @@ void drawScore(){
     text("TIME", width - 100, 32);
     text(str(30-(millis()-startTime)/1000), width - 70, 64);
 
+    // Draws the flash
+    fill(255,255,0, 150);
+    noStroke();
+    circle(mouseX, mouseY, flashSize);
+    if (flashSize > 0) flashSize -= 5; //Decrease the size of the flash per time step
+
+    // Draws the reticle
     noFill();
     stroke(255,0,0);
     circle(mouseX, mouseY, 100);
@@ -274,7 +307,6 @@ void drawScore(){
 
 void drawShells(){
     rectMode(CENTER);
-    println(shells);
     for (int i = 0; i < shells; i++){
         fill(255,215,0);
         rect(55, height - 17.5 -(i * 20), 10, 15);

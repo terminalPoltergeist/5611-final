@@ -32,11 +32,8 @@ public class Boid {
             float dist = delta.length(); // distance between the mouse and the given boid member
             
             
-<<<<<<< Updated upstream
+
             if (dist < 50) {
-=======
-            if (dist < 50) {
->>>>>>> Stashed changes
                 current_member.vel.add(delta.normalized().times(dist/75));
             }
             if (current_member.vel.length() > maxSpeed) current_member.vel.clampToLength(maxSpeed); //Sets a max speed
