@@ -13,7 +13,7 @@ String fileName = "scoreData.txt";
 String userInput = "";
 
 void setup() {
-    size(500,500,P2D);
+    size(1000,1000,P2D);
 
     // Is the shape that all the boids will be, defined here to assist with speed up as drawing them each slowed it down without PShape    
     boid = createShape();
