@@ -13,6 +13,8 @@ String[] scoreData;
 String fileName = "scoreData.txt";
 String userInput = "";
 Vec2[] clouds = new Vec2[6];
+int shells = 2;
+boolean fired = false;
 
 void setup() {
     size(1000,1000,P2D);
@@ -65,13 +67,13 @@ void mouseClicked() {
                 Member current_member = b.members[i];
                 Vec2 mouse = new Vec2(mouseX, mouseY);
                 float dist = current_member.pos.distanceTo(mouse);
-                
-                if (dist < 50) {
+                fired = true;
+                if (dist < 50 && shells > 0) {
                     // Add the member to falling list
                     falling_members.add(b.members[i]);
                     knocked_out.append(i);
                     score += 10;
-                }
+                } 
             }
             // Resize the members
             members = new Member[numBoids - knocked_out.size()];
@@ -141,6 +143,16 @@ void draw() {
 
             // Score display
             drawScore();
+
+            if (fired && shells < 1) {
+                shells = 2;
+                fired = false;
+            }
+            if (fired) {
+                shells--;
+                fired = false;
+            }
+            drawShells();
 
             if (millis() - startTime > 30000) {
                 currentLevel = 2; //Is set for 30 seconds right now 
@@ -260,6 +272,18 @@ void drawScore(){
     stroke(0,0,0);
 }
 
+void drawShells(){
+    rectMode(CENTER);
+    println(shells);
+    for (int i = 0; i < shells; i++){
+        fill(255,215,0);
+        rect(55, height - 17.5 -(i * 20), 10, 15);
+        fill(255, 0, 0);
+        rect(30, height - 17.5 -(i*20), 40, 15);
+    }
+    
+}
+
 void saveScore(){
     String newScore = userInput + " - " + str(score);
     String[] newData = append(scoreData, newScore);
@@ -298,13 +322,6 @@ void drawCloud(float x, float y) {
   ellipse(x, y, cloudWidth + x % 17, cloudHeight + y % 13);
   ellipse(x - cloudWidth * 0.4, y, cloudWidth * 1.2 - x % 23, cloudHeight * 0.8 + y % 23);
   ellipse(x + cloudWidth * 0.4, y, cloudWidth * 0.8 + x % 23, cloudHeight + y % 23);
-  
-  // Draw smaller circles to add detail to the cloud
-//   for (int i = 0; i < 5; i++) {
-//     float offsetX = random(-cloudWidth * 0.4, cloudWidth * 0.4);
-//     float offsetY = random(-cloudHeight * 0.4, cloudHeight * 0.4);
-//     ellipse(x + offsetX, y + offsetY, random(20, 50), random(10, 30));
-//   }
 }
 
 void keyPressed(){
