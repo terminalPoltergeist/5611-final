@@ -22,10 +22,10 @@ void setup() {
     boid.beginShape();
     boid.stroke(0,0,0);
     boid.strokeWeight(0);
-    boid.vertex(0, 5);
-    boid.vertex(-3, -5);
-    boid.vertex(0, -3);
-    boid.vertex(3, -5);
+    boid.vertex(0, 7);
+    boid.vertex(-4, -7);
+    boid.vertex(0, -4);
+    boid.vertex(4, -7);
     boid.endShape(CLOSE);
 
     // Load the score

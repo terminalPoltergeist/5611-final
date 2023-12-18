@@ -32,8 +32,8 @@ public class Boid {
             float dist = delta.length(); // distance between the mouse and the given boid member
             
             
-            if (dist < 100) {
-                current_member.vel.add(delta.times(dist/75));
+            if (dist < 50) {
+                current_member.vel.add(delta.normalized().times(dist/75));
             }
             if (current_member.vel.length() > maxSpeed) current_member.vel.clampToLength(maxSpeed); //Sets a max speed
             // check if members are outside of the screen
