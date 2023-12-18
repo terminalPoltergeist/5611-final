@@ -23,9 +23,9 @@ public class Member {
 
     public void follow(Vec2 dv) {
         this.vel.add(dv);
-        // if (this.vel.length() < 1.5) {
-        //     // if they start moving too slow, speed them up?
-        //     this.vel.mul(1.5);
-        // }
+        if (this.vel.length() < 1.5) {
+            // if they start moving too slow, speed them up?
+            this.vel.mul(1.5);
+        }
     }
 }
