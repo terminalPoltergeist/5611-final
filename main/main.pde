@@ -5,6 +5,7 @@ PShape boid;
 ArrayList<Member> falling_members = new ArrayList<Member>();
 int swap = 0; // Used to make all the boids fall in the same way
 ArrayList<Member>  dead_members = new ArrayList<Member>();
+int score = 0;
 
 void setup() {
     size(500,500,P2D);
@@ -36,6 +37,7 @@ void mouseClicked() {
             // Add the member to falling list
             falling_members.add(b.members[i]);
             knocked_out.append(i);
+            score += 10;
         }
     }
     // Resize the members
@@ -57,7 +59,8 @@ void draw() {
     stroke(0,0,0);
 
     b.update_members();
-    for (int i = 0; i < b.n; i++) { // Move all the living boids
+    // Move all the living boids
+    for (int i = 0; i < b.n; i++) { 
         Vec2 pos = b.members[i].pos;
         Vec2 vel = b.members[i].vel;
         pushMatrix();
@@ -67,6 +70,7 @@ void draw() {
         popMatrix();
         
     }
+    // Move all the falling boids
     for (int i = 0; i < falling_members.size(); i++){
         Vec2 pos = falling_members.get(i).pos;
         pushMatrix();
@@ -74,18 +78,25 @@ void draw() {
         shape(boid);
         popMatrix();
         if (swap < 10){
-            falling_members.get(i).pos = pos.minus(new Vec2(1,-1));
+            falling_members.get(i).pos = pos.minus(new Vec2(1,-2)); // The difference in y is intentional as it makes the motion more "realistic" to me
             
         } else if (swap < 20){
             falling_members.get(i).pos = pos.minus(new Vec2(-1,-1)); 
         }
         
     }
+    // Setup for the swaying of the falling boids
     if (swap < 20){
         swap++;
     } else {
         swap = 0;
-    } 
+    }
+
+    // Score display
+    textSize(32);
+    textAlign(LEFT);
+    text("SCORE:", 0, 32);
+    text(str(score), 40, 64);
 
     noFill();
     stroke(200,200,200);
