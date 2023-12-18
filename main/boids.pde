@@ -5,10 +5,12 @@ public class Boid {
     public Member[] members;
     public int n; // number of members in the boid
     public Vec2 com; // percieved center of mass of the boid
+    float maxSpeed;
 
     public Boid(Member[] mems) {
         this.members = mems;
         this.n = this.members.length;
+        maxSpeed = 3.0;
     }
 
     public void update_members() {
@@ -29,8 +31,10 @@ public class Boid {
             Vec2 delta = current_member.pos.minus(mouse);
             float dist = delta.length(); // distance between the mouse and the given boid member
             if (dist < 100) {
-                current_member.pos.add(delta.normalized().times(dist/75));
+                current_member.vel.add(delta.normalized().times(dist/75));
             }
+            if (current_member.vel.length() > maxSpeed) current_member.vel.clampToLength(maxSpeed); //Sets a max speed
+            // check if members are outside of the screen
             if (current_member.pos.x > width + 5) {
                 current_member.pos.x = 0;
             }
@@ -51,11 +55,18 @@ public class Boid {
         // the com of the boid without including member m
         // per: http://www.kfish.org/boids/pseudocode.html
         Vec2 total = new Vec2(0,0);
+        int count = 0; // This is to account for the 1/(N-1)
         for (int i = 0; i < this.n; i++) {
-            if (this.members[i] != m) total.add(this.members[i].pos); // don't include the position of member m
+            if (this.members[i] != m && m.pos.distanceTo(this.members[i].pos) < 50){
+                total.add(this.members[i].pos); // don't include the position of member m
+                count++;
+            } 
         }
-        total.times(0.5);
-        this.com = total.times(1 /float(this.n - 1));
+        if (count > 0){
+            total.mul(1/count);
+        }
+        total.mul(0.5);
+        this.com = total;
         return this.com;
     }
 
@@ -77,14 +88,15 @@ public class Boid {
     public Vec2 go_with_the_flow(Member m) {
         // for a given member, update it's velocity to go with the rest of the members
         Vec2 pv = new Vec2(0.0,0.0); // the percieved velocity of the member
-
+        int count = 0;
         for (int i = 0; i < this.n; i++) {
-            if (this.members[i] != m) {
+            if (this.members[i] != m && m.pos.distanceTo(this.members[i].pos) < 50) {
                 pv = pv.plus(this.members[i].vel);
+                count++;
             }
         }
-        pv = pv.times(1/float(this.n-1));
-
+        if (count > 0) pv = pv.times(1/float(count));
+    
         return pv.minus(m.vel);
     }
 }
