@@ -1,6 +1,6 @@
 import processing.sound.*;
 Sound s;
-SoundFile reload, blast, quack;
+SoundFile reload, blast, quack, startMusic, gameMusic, endMusic;
 
 int numBoidsGlobal = 100;
 int numBoids = numBoidsGlobal;
@@ -45,10 +45,18 @@ void setup() {
     reload = new SoundFile(this, "Audio/reload.mp3");
     blast = new SoundFile(this, "Audio/blast.mp3");
     quack = new SoundFile(this, "Audio/quack.mp3");
-
+    startMusic = new SoundFile(this, "Audio/startMusic.mp3");
+    gameMusic = new SoundFile(this, "Audio/gameMusic.mp3");
+    endMusic = new SoundFile(this, "Audio/end.wav");
+    quack.amp(0.3);
+    startMusic.amp(0.3);
+    gameMusic.amp(0.2);
+    endMusic.amp(0.7);
+    startMusic.play();
 }
 
 void startGame(){
+    startMusic.stop();
     currentLevel = 1;
     startTime = millis();
     falling_members = new ArrayList<Member>();
@@ -64,6 +72,7 @@ void startGame(){
     for (int i = 0; i < 6; i++){
         clouds[i] = new Vec2(random(width),random(height));
     }
+    gameMusic.play();
 }
 
 void mouseClicked() {
@@ -114,10 +123,12 @@ void mouseClicked() {
             if (mouseX > width / 2 - 40 && mouseX < width / 2 + 40 && mouseY > height / 2 + 25 && mouseY < height / 2 + 55 && userInput.length() == 3){
                 saveScore();
                 currentLevel = 0;
+                startMusic.play();
             }
             break;
         case 4: // Score Screen Display
             currentLevel = 0;
+            startMusic.play();
             break;
 
     }
@@ -179,6 +190,8 @@ void draw() {
             if (millis() - startTime > 30000) {
                 currentLevel = 2; //Is set for 30 seconds right now 
                 startTime = millis(); // Set a new start time so that there is a buffer on going back to the start screen
+                gameMusic.stop();
+                endMusic.play();
             }
             break;
         case 2: // End Screen
