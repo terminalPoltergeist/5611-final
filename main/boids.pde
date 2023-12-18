@@ -35,7 +35,7 @@ public class Boid {
 <<<<<<< Updated upstream
             if (dist < 50) {
 =======
-            if (dist < 100) {
+            if (dist < 50) {
 >>>>>>> Stashed changes
                 current_member.vel.add(delta.normalized().times(dist/75));
             }
